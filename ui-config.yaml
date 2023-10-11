@@ -1,0 +1,29 @@
+theme:
+  fontFamily: "'Inter', sans-serif"
+  primaryColor: blue
+  components:
+    Button:
+      styles:
+        root:
+          fontWeight: 400
+    Alert:
+      styles:
+        title:
+          fontWeight: 500
+    AvatarGroup:
+      styles:
+        truncated:
+          fontWeight: 500
+
+header_data:
+  home_links:
+    large: Dash Mantine Template
+    small: DMT
+  header_links:
+    - icon: radix-icons:github-logo
+      url: https://github.com/snehilvj/dash-mantine-components
+
+sections:
+  Home: "fa-solid:home"
+  registry: "radix-icons:mix"
+  Examples: "radix-icons:mix"

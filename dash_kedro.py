@@ -1,15 +1,15 @@
-# dash_app.py
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
-from dash.dependencies import Input, Output
+# ... (rest of the code from dash_app.py)
 
-app = dash.Dash(__name__)
+from kedro.context import load_context
+from kedro.pipeline import node, Pipeline
+from kedro.runner import SequentialRunner
 
-app.layout = html.Div([
-    html.Button("Run Kedro Node", id="run-node-btn", n_clicks=0),
-    html.Div(id="output-div")
-])
+# Load the Kedro project context
+project_path = "."  # adjust as necessary
+context = load_context(project_path)
+
+# Assuming you've defined your pipeline in kedro_pipeline.py
+from kedro_pipeline import example_pipeline
 
 @app.callback(
     Output("output-div", "children"),
@@ -17,9 +17,11 @@ app.layout = html.Div([
 )
 def run_kedro_node(n_clicks):
     if n_clicks > 0:
-        # Logic to run Kedro node goes here
-        pass
+        # Run the Kedro node
+        runner = SequentialRunner()
+        runner.run(example_pipeline, context.catalog)
 
+        return "Kedro node executed!"
     return f"Button clicked {n_clicks} times."
 
-if __name__ == "__main__":
+# ... (rest of the code from dash_app.py)

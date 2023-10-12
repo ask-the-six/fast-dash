@@ -1,3 +1,47 @@
+# kedro_pipeline.py
+from kedro.pipeline import node, Pipeline
+
+def example_node(firstname, lastname):
+    print(f"Hello, {firstname} {lastname}!")
+
+example_pipeline = Pipeline([node(func=example_node, inputs=["firstname", "lastname"], outputs=None, name="example_node")])
+###
+# dash_app.py
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
+from dash.dependencies import Input, Output
+
+app = dash.Dash(__name__)
+
+app.layout = html.Div([
+    dcc.Input(id='firstname-input', type='text', placeholder='First Name'),
+    dcc.Input(id='lastname-input', type='text', placeholder='Last Name'),
+    html.Button('Submit', id='submit-button'),
+    html.Div(id='output-div')
+])
+
+@app.callback(
+    Output("output-div", "children"),
+    [Input("submit-button", "n_clicks")],
+    [dash.dependencies.State('firstname-input', 'value'),
+     dash.dependencies.State('lastname-input', 'value')]
+)
+def run_kedro_node(n_clicks, firstname, lastname):
+    if n_clicks and firstname and lastname:
+        # Logic to run Kedro node with firstname and lastname parameters goes here
+        pass
+
+    return "Pipeline executed."
+
+if __name__ == "__main__":
+    app.run_server(debug=True)
+
+
+
+####
+
+
 # ... (rest of the code from dash_app.py)
 
 from kedro.context import load_context
@@ -13,15 +57,21 @@ from kedro_pipeline import example_pipeline
 
 @app.callback(
     Output("output-div", "children"),
-    [Input("run-node-btn", "n_clicks")]
+    [Input("submit-button", "n_clicks")],
+    [dash.dependencies.State('firstname-input', 'value'),
+     dash.dependencies.State('lastname-input', 'value')]
 )
-def run_kedro_node(n_clicks):
-    if n_clicks > 0:
-        # Run the Kedro node
+def run_kedro_node(n_clicks, firstname, lastname):
+    if n_clicks and firstname and lastname:
+        # Manually set the parameters for the Kedro pipeline
+        context.catalog.save("firstname", firstname)
+        context.catalog.save("lastname", lastname)
+
+        # Run the Kedro pipeline
         runner = SequentialRunner()
         runner.run(example_pipeline, context.catalog)
 
-        return "Kedro node executed!"
-    return f"Button clicked {n_clicks} times."
+        return f"Hello, {firstname} {lastname}!"
+    return "Enter names and click submit."
 
 # ... (rest of the code from dash_app.py)

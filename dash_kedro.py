@@ -1,3 +1,32 @@
+from kedro.framework.session import KedroSession
+from kedro.framework.startup import bootstrap_project
+from pathlib import Path
+
+# Define your alternative parameters
+alt_params = {
+    "param1": "value1_alt",
+    "param2": "value2_alt",
+    # ... add more parameters as needed
+}
+
+# Path to your Kedro project root
+project_path = Path("<project_root>")
+
+# Bootstrapping the Kedro project
+bootstrap_project(project_path)
+
+# Create a Kedro session with the alternative parameters
+with KedroSession.create("<package_name>", project_path=project_path, extra_params=alt_params) as session:
+    # Run the specific pipeline
+    session.run(pipeline_name="my_pipeline")
+
+
+
+
+
+
+
+
 # kedro_pipeline.py
 from kedro.pipeline import node, Pipeline
 
